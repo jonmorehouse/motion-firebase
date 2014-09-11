@@ -2,7 +2,7 @@ describe 'Firebase' do
 
   it 'can create a Firebase instance' do
     firebase = Firebase.alloc.initWithUrl(MOTION_FIREBASE_SPEC)
-    firebase.should.is_a Firebase
+    firebase.should.be.kind_of Firebase
   end
 
   describe 'Firebase instance' do
@@ -12,26 +12,29 @@ describe 'Firebase' do
     end
 
     it 'should clear! values' do
-      @firebase.clear!
+      @firebase.setValue('specs')
       wait 0.1 do
-        @firebase.on(:value) do |snapshot|
-          @value = snapshot.value
-        end
+        @firebase.removeValue
         wait 0.1 do
-          @value.should == nil
+          @firebase.on(:value) do |snapshot|
+            @value = snapshot.value
+          end
+          wait 0.1 do
+            @value.should == nil
+          end
         end
       end
     end
 
     it 'should access a child node with []' do
       child = @firebase['child']
-      child.should.is_a Firebase
+      child.should.be.kind_of Firebase
       child.name.should == 'child'
     end
 
     it 'should append child names with multiple arguments to []' do
       child = @firebase['child', '1']
-      child.should.is_a Firebase
+      child.should.be.kind_of Firebase
       child.name.should == '1'
       child.parent.name.should == 'child'
     end
